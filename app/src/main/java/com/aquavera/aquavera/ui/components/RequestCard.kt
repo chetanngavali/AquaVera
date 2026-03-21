@@ -33,12 +33,12 @@ fun RequestCard(request: WaterRequest, onClick: () -> Unit = {}) {
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = request.cropType,
+                    text = request.crop_type,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "${request.season} • ${request.date}",
+                    text = "${request.season} • ${request.created_at.split(" ")[0]}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -47,7 +47,7 @@ fun RequestCard(request: WaterRequest, onClick: () -> Unit = {}) {
                 StatusBadge(status = request.status)
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "₹${request.billAmount}",
+                    text = "₹${request.bill_amount}",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.ExtraBold,
                     color = MaterialTheme.colorScheme.primary

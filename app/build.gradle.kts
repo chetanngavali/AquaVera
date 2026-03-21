@@ -33,6 +33,7 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
 }
 
@@ -49,6 +50,10 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.coil.compose)
+    implementation(libs.play.services.location)
+    
+    // Classic Material Components for XML layouts
+    implementation("com.google.android.material:material:1.12.0")
 
     // Supabase
     implementation(platform(libs.supabase.bom))

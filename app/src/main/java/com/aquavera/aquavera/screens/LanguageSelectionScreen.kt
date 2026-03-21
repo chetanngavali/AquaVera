@@ -1,9 +1,14 @@
 package com.aquavera.aquavera.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,38 +37,48 @@ fun LanguageSelectionScreen(
             Image(
                 painter = painterResource(id = R.drawable.app_logo),
                 contentDescription = "AquaVera Logo",
-                modifier = Modifier.size(120.dp)
+                modifier = Modifier.size(100.dp)
             )
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
-                "AquaVera",
-                fontSize = 36.sp,
+                text = "AquaVera",
+                fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
-            
-            Spacer(modifier = Modifier.height(40.dp))
-            
             Text(
-                "Choose Your Language",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.DarkGray
+                text = "Smart Irrigation Management",
+                fontSize = 14.sp,
+                color = Color.Gray,
+                fontWeight = FontWeight.Medium
             )
-            Text(
-                "आपकी भाषा चुनें",
-                fontSize = 18.sp,
-                color = Color.Gray
-            )
+            
+            Spacer(modifier = Modifier.height(48.dp))
+            
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(
+                    text = "Choose Your Language",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+                Text(
+                    text = "अपनी पसंदीदा भाषा चुनें",
+                    fontSize = 16.sp,
+                    color = Color.Gray
+                )
+            }
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
             LanguageOption(
                 languageName = "English",
                 nativeName = "English",
                 isSelected = langViewModel.currentLanguage == "en",
-                onClick = { 
-                    langViewModel.setLanguage("en")
-                }
+                onClick = { langViewModel.setLanguage("en") }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -72,9 +87,7 @@ fun LanguageSelectionScreen(
                 languageName = "Hindi",
                 nativeName = "हिंदी",
                 isSelected = langViewModel.currentLanguage == "hi",
-                onClick = { 
-                    langViewModel.setLanguage("hi")
-                }
+                onClick = { langViewModel.setLanguage("hi") }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -83,9 +96,7 @@ fun LanguageSelectionScreen(
                 languageName = "Marathi",
                 nativeName = "मराठी",
                 isSelected = langViewModel.currentLanguage == "mr",
-                onClick = { 
-                    langViewModel.setLanguage("mr")
-                }
+                onClick = { langViewModel.setLanguage("mr") }
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -95,13 +106,17 @@ fun LanguageSelectionScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
-                Text("Continue", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    text = langViewModel.t("continue"),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
             }
             
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }
@@ -113,19 +128,25 @@ fun LanguageOption(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
+    val borderColor = if (isSelected) MaterialTheme.colorScheme.primary else Color(0xFFE0E0E0)
+    val backgroundColor = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.05f) else Color.White
+    
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
+            .clickable { onClick() }
+            .border(
+                width = if (isSelected) 2.dp else 1.dp,
+                color = borderColor,
+                shape = RoundedCornerShape(16.dp)
+            ),
         shape = RoundedCornerShape(16.dp),
-        border = if (isSelected) ButtonDefaults.outlinedButtonBorder(enabled = true).copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.primary)) else null,
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.05f) else Color(0xFFF8F9FA)
-        )
+        colors = CardDefaults.cardColors(containerColor = backgroundColor),
+        elevation = CardDefaults.cardElevation(0.dp)
     ) {
         Row(
             modifier = Modifier
-                .padding(20.dp)
+                .padding(16.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -134,21 +155,38 @@ fun LanguageOption(
                 Text(
                     text = languageName,
                     fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.SemiBold,
                     color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Black
                 )
                 Text(
                     text = nativeName,
                     fontSize = 14.sp,
-                    color = Color.Gray
+                    color = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) else Color.Gray
                 )
             }
-            if (isSelected) {
-                RadioButton(
-                    selected = true,
-                    onClick = null,
-                    colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.primary)
-                )
+            
+            Box(
+                modifier = Modifier
+                    .size(24.dp)
+                    .background(
+                        color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
+                        shape = CircleShape
+                    )
+                    .border(
+                        width = if (isSelected) 0.dp else 2.dp,
+                        color = if (isSelected) Color.Transparent else Color(0xFFBDBDBD),
+                        shape = CircleShape
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                if (isSelected) {
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
             }
         }
     }

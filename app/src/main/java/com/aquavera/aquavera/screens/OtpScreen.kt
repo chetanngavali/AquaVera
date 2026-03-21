@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -27,7 +28,6 @@ import com.aquavera.aquavera.R
 import com.aquavera.aquavera.viewmodel.AppViewModel
 import com.aquavera.aquavera.viewmodel.LangViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,9 +42,10 @@ fun OtpScreen(
     var isVerifying by remember { mutableStateOf(false) }
     var isSuccess by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+    var resendCountdown by remember { mutableIntStateOf(30) }
     
     val t = langViewModel::t
-    val scope = rememberCoroutineScope()
+    val focusManager = LocalFocusManager.current
 
     val successScale by animateFloatAsState(
         targetValue = if (isSuccess) 1.2f else 0f,
@@ -52,8 +53,17 @@ fun OtpScreen(
         label = "success_scale"
     )
 
+    // Resend Timer Logic
+    LaunchedEffect(resendCountdown) {
+        if (resendCountdown > 0) {
+            delay(1000)
+            resendCountdown--
+        }
+    }
+
     LaunchedEffect(isSuccess) {
         if (isSuccess) {
+            focusManager.clearFocus() // Hide keyboard
             delay(1500)
             onVerifySuccess()
         }
@@ -62,30 +72,32 @@ fun OtpScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(t("otp_verification")) },
+                title = { Text(t("otp_verification"), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
             )
-        }
+        },
+        containerColor = Color.White
     ) { padding ->
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .padding(24.dp),
+                    .padding(horizontal = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(32.dp))
                 Image(
                     painter = painterResource(id = R.drawable.app_logo),
                     contentDescription = null,
-                    modifier = Modifier.size(100.dp)
+                    modifier = Modifier.size(90.dp)
                 )
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 Text(
                     t("enter_otp"),
@@ -97,7 +109,8 @@ fun OtpScreen(
                     email,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(top = 4.dp)
+                    modifier = Modifier.padding(top = 4.dp),
+                    color = MaterialTheme.colorScheme.primary
                 )
 
                 Spacer(modifier = Modifier.height(40.dp))
@@ -105,7 +118,7 @@ fun OtpScreen(
                 BasicTextField(
                     value = otp,
                     onValueChange = { 
-                        if (it.length <= 6) {
+                        if (it.length <= 6 && it.all { char -> char.isDigit() }) {
                             otp = it
                             errorMessage = null
                         }
@@ -146,7 +159,8 @@ fun OtpScreen(
                     Text(
                         text = errorMessage!!,
                         color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(top = 16.dp)
+                        modifier = Modifier.padding(top = 16.dp),
+                        fontSize = 14.sp
                     )
                 }
 
@@ -154,13 +168,21 @@ fun OtpScreen(
 
                 Button(
                     onClick = {
+                        isVerifying = true
                         if (appViewModel.verifyOtp(otp)) {
+                            isVerifying = false
                             isSuccess = true
                         } else {
+                            isVerifying = false
                             errorMessage = "Invalid OTP. Please try again."
                         }
                     },
                     modifier = Modifier.fillMaxWidth().height(56.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        disabledContainerColor = Color(0xFFE0E0E0),
+                        disabledContentColor = Color.White
+                    ),
                     shape = RoundedCornerShape(12.dp),
                     enabled = otp.length == 6 && !isVerifying && !isSuccess
                 ) {
@@ -175,28 +197,41 @@ fun OtpScreen(
                     }
                 }
 
-                TextButton(
-                    onClick = { 
-                        appViewModel.generateAndSendOtp(email) { /* Show Toast? */ }
-                    },
-                    modifier = Modifier.padding(top = 16.dp),
-                    enabled = !isVerifying && !isSuccess
-                ) {
-                    Text(t("resend_otp"), color = MaterialTheme.colorScheme.primary)
+                Spacer(modifier = Modifier.height(24.dp))
+
+                if (resendCountdown > 0) {
+                    Text(
+                        "${t("resend_otp")} in ${resendCountdown}s",
+                        color = Color.Gray,
+                        fontSize = 14.sp
+                    )
+                } else {
+                    TextButton(
+                        onClick = { 
+                            resendCountdown = 30
+                            appViewModel.generateAndSendOtp(email) { }
+                        },
+                        enabled = !isVerifying && !isSuccess
+                    ) {
+                        Text(
+                            t("resend_otp"), 
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
 
             if (isSuccess) {
-                Box(
+                Surface(
                     modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+                    color = Color.White.copy(alpha = 0.95f)
                 ) {
-                    Surface(
+                    Column(
                         modifier = Modifier.fillMaxSize(),
-                        color = Color.White.copy(alpha = 0.8f)
-                    ) {}
-                    
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
                         Icon(
                             imageVector = Icons.Default.CheckCircle,
                             contentDescription = null,
@@ -211,6 +246,13 @@ fun OtpScreen(
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF4CAF50),
+                            modifier = Modifier.scale(successScale)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            "Redirecting to your account...",
+                            color = Color.Gray,
+                            fontSize = 14.sp,
                             modifier = Modifier.scale(successScale)
                         )
                     }

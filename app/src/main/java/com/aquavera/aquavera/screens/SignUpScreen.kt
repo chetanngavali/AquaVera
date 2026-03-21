@@ -28,7 +28,6 @@ import com.aquavera.aquavera.R
 import com.aquavera.aquavera.viewmodel.AppViewModel
 import com.aquavera.aquavera.viewmodel.LangViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpScreen(
@@ -47,15 +46,15 @@ fun SignUpScreen(
     var isSigningUp by remember { mutableStateOf(false) }
     var isSuccess by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
-    val scope = rememberCoroutineScope()
 
-    val isEmailValid = email.endsWith("@gmail.com", ignoreCase = true)
-    val isPhoneValid = phone.length == 10
+    val isEmailValid = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    val isPhoneValid = phone.length >= 10 && phone.all { it.isDigit() }
     
-    val passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$".toRegex()
+    // Simplified regex: Min 6 chars, at least one letter and one number
+    val passwordRegex = "^(?=.*[A-Za-z])(?=.*\\d).{6,}$".toRegex()
     val isPasswordValid = passwordRegex.matches(password)
     
-    val isFormValid = fullName.isNotEmpty() && isEmailValid && isPhoneValid && 
+    val isFormValid = fullName.trim().isNotEmpty() && isEmailValid && isPhoneValid && 
                       isPasswordValid && password == confirmPassword
 
     val successScale by animateFloatAsState(
@@ -76,31 +75,44 @@ fun SignUpScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(24.dp)
+                    .padding(horizontal = 24.dp)
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                // Language Switcher at the top
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = { langViewModel.toggleLanguage() }) {
+                        Icon(Icons.Default.Language, contentDescription = null, modifier = Modifier.size(18.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(langViewModel.currentLanguage.uppercase(), fontWeight = FontWeight.Bold)
+                    }
+                }
+
                 Image(
                     painter = painterResource(id = R.drawable.app_logo),
                     contentDescription = "AquaVera Logo",
-                    modifier = Modifier.size(80.dp)
+                    modifier = Modifier.size(70.dp) // Reduced from 80
                 )
                 Text(
                     langViewModel.t("app_name"),
-                    fontSize = 32.sp,
+                    fontSize = 28.sp, // Reduced from 32
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
                     langViewModel.t("farmer_registration"),
-                    fontSize = 12.sp,
+                    fontSize = 11.sp, // Reduced from 12
                     fontWeight = FontWeight.Medium,
                     letterSpacing = 2.sp,
                     color = Color.Gray
                 )
 
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(24.dp)) // Reduced from 40
 
                 OutlinedTextField(
                     value = fullName,
@@ -108,10 +120,11 @@ fun SignUpScreen(
                     label = { Text(langViewModel.t("full_name")) },
                     modifier = Modifier.fillMaxWidth(),
                     leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(12.dp),
+                    singleLine = true
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
                 OutlinedTextField(
                     value = email,
@@ -123,19 +136,19 @@ fun SignUpScreen(
                     isError = email.isNotEmpty() && !isEmailValid,
                     supportingText = {
                         if (email.isNotEmpty() && !isEmailValid) {
-                            Text("Only @gmail.com emails are allowed", color = MaterialTheme.colorScheme.error)
+                            Text("Invalid email format", color = MaterialTheme.colorScheme.error)
                         }
-                    }
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    singleLine = true
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
                 OutlinedTextField(
                     value = phone,
                     onValueChange = { 
-                        if (it.length <= 10 && it.all { char -> char.isDigit() }) {
-                            phone = it
-                        }
+                        if (it.all { char -> char.isDigit() }) phone = it
                     },
                     label = { Text(langViewModel.t("phone_number")) },
                     modifier = Modifier.fillMaxWidth(),
@@ -143,15 +156,16 @@ fun SignUpScreen(
                     prefix = { Text("+91 ") },
                     shape = RoundedCornerShape(12.dp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                    isError = phone.isNotEmpty() && phone.length != 10,
+                    isError = phone.isNotEmpty() && !isPhoneValid,
                     supportingText = {
-                        if (phone.isNotEmpty() && phone.length != 10) {
-                            Text("Please enter a valid 10-digit number", color = MaterialTheme.colorScheme.error)
+                        if (phone.isNotEmpty() && !isPhoneValid) {
+                            Text("Enter 10-digit mobile number", color = MaterialTheme.colorScheme.error)
                         }
-                    }
+                    },
+                    singleLine = true
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
                 OutlinedTextField(
                     value = password,
@@ -172,12 +186,13 @@ fun SignUpScreen(
                     isError = password.isNotEmpty() && !isPasswordValid,
                     supportingText = {
                         if (password.isNotEmpty() && !isPasswordValid) {
-                            Text("Min 8 chars, 1 uppercase, 1 lowercase, 1 digit, 1 special char", color = MaterialTheme.colorScheme.error, fontSize = 11.sp)
+                            Text("Min 6 chars with letters & numbers", color = MaterialTheme.colorScheme.error, fontSize = 11.sp)
                         }
-                    }
+                    },
+                    singleLine = true
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
                 OutlinedTextField(
                     value = confirmPassword,
@@ -192,7 +207,8 @@ fun SignUpScreen(
                         if (confirmPassword.isNotEmpty() && password != confirmPassword) {
                             Text("Passwords do not match", color = MaterialTheme.colorScheme.error)
                         }
-                    }
+                    },
+                    singleLine = true
                 )
 
                 if (errorMessage != null) {
@@ -204,7 +220,7 @@ fun SignUpScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 Button(
                     onClick = {
@@ -220,7 +236,11 @@ fun SignUpScreen(
                         }
                     },
                     modifier = Modifier.fillMaxWidth().height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        disabledContainerColor = Color(0xFFE0E0E0),
+                        disabledContentColor = Color.White
+                    ),
                     shape = RoundedCornerShape(12.dp),
                     enabled = isFormValid && !isSigningUp && !isSuccess
                 ) {
@@ -237,8 +257,17 @@ fun SignUpScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(langViewModel.t("already_account"))
-                    TextButton(onClick = onLoginClick, enabled = !isSigningUp && !isSuccess) {
-                        Text(langViewModel.t("login"), fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                    TextButton(
+                        onClick = onLoginClick, 
+                        enabled = !isSigningUp && !isSuccess,
+                        contentPadding = PaddingValues(horizontal = 8.dp)
+                    ) {
+                        Text(
+                            langViewModel.t("login"), 
+                            fontWeight = FontWeight.Bold, 
+                            color = MaterialTheme.colorScheme.primary,
+                            fontSize = 16.sp
+                        )
                     }
                 }
                 
@@ -249,7 +278,7 @@ fun SignUpScreen(
             if (isSuccess) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = Color.White.copy(alpha = 0.9f)
+                    color = Color.White.copy(alpha = 0.95f)
                 ) {
                     Column(
                         modifier = Modifier.fillMaxSize(),

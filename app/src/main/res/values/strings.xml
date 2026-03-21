@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">AquaVera</string>
+    <string name="title_request_water">Request water</string>
+    <string name="label_crop_type">Crop Type *</string>
+    <string name="label_crop">Crop *</string>
+    <string name="label_duration_req">Duration *</string>
+    <string name="label_capture_image_req">Capture Farm Image *</string>
+    <string name="btn_capture">Capture picture</string>
+    <string name="label_billing">Billing amount</string>
+    <string name="btn_submit">Submit</string>
+
+    <string name="cat_cereals">Cereals</string>
+    <string name="cat_pulses">Pulses</string>
+    <string name="cat_cash_crops">Cash Crops</string>
+    <string name="cat_oilseeds">Oilseeds</string>
+    <string name="cat_fruits">Fruits</string>
+    <string name="cat_vegetables">Vegetables</string>
+    <string name="cat_spices">Spices &amp; Plantation</string>
+    <string name="cat_flowers">Flowers</string>
+    <string name="cat_fodder">Fodder Crops</string>
+    <string name="desc_farm_image_preview">Farm image preview</string>
 </resources>
