@@ -120,7 +120,7 @@ AquaVera follows the **MVVM** architecture pattern:
       Tester & Researcher
     </td>
     <td align="center">
-      <img src="https://ui-avatars.com/api/?name=Varad&background=random&color=fff&size=100" width="100px;" alt="Varad"/><br />
+      <img src="https://github.com/varad2005&background=random&color=fff&size=100" width="100px;" alt="Varad"/><br />
       <sub><b>Varad</b></sub><br />
       Full Stack Development
     </td>
