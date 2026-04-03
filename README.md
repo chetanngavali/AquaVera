@@ -110,13 +110,13 @@ AquaVera follows the **MVVM** architecture pattern:
       Android Developer
     </td>
     <td align="center">
-      <img src="https://github.com/Kadnar123,png" alt="Kalyani"/><br />
-      <sub><b>Kalyani</b></sub><br />
+      <img src="https://github.com/Kadnar123.png" alt="Kalyani Kadnar"/><br />
+      <sub><b>Kalyani Kadnar</b></sub><br />
       Team Leader & Researcher
     </td>
     <td align="center">
-      <img src="https://github.com/harshitat197-gif.png" width="100px;" alt="Harshita"/><br />
-      <sub><b>Harshita</b></sub><br />
+      <img src="https://github.com/harshitat197-gif.png" width="100px;" alt="Harshita Thakur"/><br />
+      <sub><b>Harshita Thakur</b></sub><br />
       Tester & Researcher
     </td>
     <td align="center">
