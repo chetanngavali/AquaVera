@@ -13,6 +13,7 @@
   <a href="#tech-stack">Tech Stack</a> •
   <a href="#getting-started">Getting Started</a> •
   <a href="#architecture">Architecture</a> •
+  <a href="#team">Team</a> •
   <a href="#contributing">Contributing</a>
 </p>
 
@@ -94,6 +95,37 @@ AquaVera follows the **MVVM** architecture pattern:
 - **ViewModel**: Manages UI business logic and interacts with the Repository/Service layer.
 - **Model**: Data entities and Supabase DTOs.
 - **Service/Utils**: Centralized logic for Supabase, Billing, and Email operations.
+
+## 👥 Meet the Team
+
+<p align="center">
+  <b>Project Leads & Developers</b>
+</p>
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="https://github.com/chetanngavali.png" width="100px;" alt="Chetan Gavali"/><br />
+      <sub><b>Chetan Gavali</b></sub><br />
+      Team Lead / Developer
+    </td>
+    <td align="center">
+      <img src="https://ui-avatars.com/api/?name=Kalyani&background=random&color=fff&size=100" width="100px;" alt="Kalyani"/><br />
+      <sub><b>Kalyani</b></sub><br />
+      Team Lead
+    </td>
+    <td align="center">
+      <img src="https://ui-avatars.com/api/?name=Harshita&background=random&color=fff&size=100" width="100px;" alt="Harshita"/><br />
+      <sub><b>Harshita</b></sub><br />
+      Team Lead
+    </td>
+    <td align="center">
+      <img src="https://ui-avatars.com/api/?name=Varad&background=random&color=fff&size=100" width="100px;" alt="Varad"/><br />
+      <sub><b>Varad</b></sub><br />
+      Team Lead
+    </td>
+  </tr>
+</table>
 
 ## 🤝 Contributing
 
