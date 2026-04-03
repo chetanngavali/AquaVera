@@ -115,7 +115,7 @@ AquaVera follows the **MVVM** architecture pattern:
       Team Leader & Researcher
     </td>
     <td align="center">
-      <img src="https://github.com/harshitat197-gif" width="100px;" alt="Harshita"/><br />
+      <img src="https://github.com/harshitat197-gif.png" width="100px;" alt="Harshita"/><br />
       <sub><b>Harshita</b></sub><br />
       Tester & Researcher
     </td>
