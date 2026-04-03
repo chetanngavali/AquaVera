@@ -105,7 +105,7 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 
 ## 📧 Contact
 
-**Chetan Ngavali** - [GitHub](https://github.com/chetanngavali)
+**Chetan Gavali** - [GitHub](https://github.com/chetanngavali)
 
 ---
 <p align="center">
