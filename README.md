@@ -107,22 +107,22 @@ AquaVera follows the **MVVM** architecture pattern:
     <td align="center">
       <img src="https://github.com/chetanngavali.png" width="100px;" alt="Chetan Gavali"/><br />
       <sub><b>Chetan Gavali</b></sub><br />
-      Team Lead / Developer
+      Android Developer
     </td>
     <td align="center">
       <img src="https://ui-avatars.com/api/?name=Kalyani&background=random&color=fff&size=100" width="100px;" alt="Kalyani"/><br />
       <sub><b>Kalyani</b></sub><br />
-      Team Lead
+      Team Leader & Researcher
     </td>
     <td align="center">
       <img src="https://ui-avatars.com/api/?name=Harshita&background=random&color=fff&size=100" width="100px;" alt="Harshita"/><br />
       <sub><b>Harshita</b></sub><br />
-      Team Lead
+      Tester & Researcher
     </td>
     <td align="center">
       <img src="https://ui-avatars.com/api/?name=Varad&background=random&color=fff&size=100" width="100px;" alt="Varad"/><br />
       <sub><b>Varad</b></sub><br />
-      Team Lead
+      Full Stack Development
     </td>
   </tr>
 </table>
